@@ -1,25 +1,30 @@
--- Função para gerar um número aleatório entre min e max
 local function gerarNumeroAleatorio(min, max)
 	return math.random(min, max)
 end
 
--- Função para ler a entrada do jogador
 local function lerEntrada()
-	io.write("Digite um número entre 1 e 100: ")
-	return tonumber(io.read())
+	while true do
+		io.write("Digite um número entre 1 e 100: ")
+		local input = tonumber(io.read())
+		if input and input >= 1 and input <= 100 then
+			return input
+		else
+			print("Entrada inválida! Por favor, digite um número entre 1 e 100.")
+		end
+	end
 end
 
--- Função principal do jogo
 local function jogoAdivinhacao()
-	math.randomseed(os.time()) -- Inicializa a semente para gerar números aleatórios
+	math.randomseed(os.time())
 
 	local numeroSecreto = gerarNumeroAleatorio(1, 100)
 	local tentativas = 0
+	local maxTentativas = 10
 	local tentativa
 
-	print("Bem-vindo ao jogo de adivinhação! Você tem 10 tentativas para adivinhar o número secreto.")
+	print("Bem-vindo ao jogo de adivinhação! Você tem " .. maxTentativas .. " tentativas para adivinhar o número secreto.")
 
-	while tentativas < 10 do
+	while tentativas < maxTentativas do
 		tentativa = lerEntrada()
 		tentativas = tentativas + 1
 
@@ -31,10 +36,21 @@ local function jogoAdivinhacao()
 		else
 			print("Tente um número menor.")
 		end
+
+		print("Tentativas restantes: " .. (maxTentativas - tentativas))
 	end
 
 	print("Você não conseguiu adivinhar o número. O número secreto era: " .. numeroSecreto)
 end
 
--- Inicia o jogo
-jogoAdivinhacao()
+local function jogarNovamente()
+	io.write("Deseja jogar novamente? (s/n): ")
+	local resposta = io.read():lower()
+	return resposta == "s" or resposta == "sim"
+end
+
+repeat
+	jogoAdivinhacao()
+until not jogarNovamente()
+
+print("Obrigado por jogar!")
